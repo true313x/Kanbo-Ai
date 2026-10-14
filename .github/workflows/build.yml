@@ -33,6 +33,11 @@ jobs:
       - name: Add llama.cpp
         run: git clone --depth 1 https://github.com/ggml-org/llama.cpp KanboAI/app/src/main/cpp/llama.cpp
 
+      - name: Patch use_mmap for new llama.cpp API
+        run: |
+          sed -i 's/mp\.use_mmap = mmap;/mp.load_mode = mmap ? LLAMA_LOAD_MODE_MMAP : LLAMA_LOAD_MODE_NONE;/' KanboAI/app/src/main/cpp/kanbo_jni.cpp
+          grep -n "load_mode" KanboAI/app/src/main/cpp/kanbo_jni.cpp
+
       - name: Install Android SDK components
         run: |
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null || true
