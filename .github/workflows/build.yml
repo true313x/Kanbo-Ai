@@ -20,9 +20,16 @@ jobs:
           gradle-version: 8.9
 
       - name: Unzip project
-        run: unzip -q -o KanboAI.zip
+        run: |
+          unzip -q -o KanboAI.zip
+          if [ -d KanboAI_fixed ]; then
+            rm -rf KanboAI
+            mv KanboAI_fixed KanboAI
+          fi
+
       - name: Fix file timestamps
-        run: find KanboAI -exec touch {} +
+        run: find . -exec touch {} +
+
       - name: Add llama.cpp
         run: git clone --depth 1 https://github.com/ggml-org/llama.cpp KanboAI/app/src/main/cpp/llama.cpp
 
