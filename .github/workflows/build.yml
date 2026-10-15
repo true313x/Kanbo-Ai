@@ -20,23 +20,13 @@ jobs:
           gradle-version: 8.9
 
       - name: Unzip project
-        run: |
-          unzip -q -o KanboAI.zip
-          if [ -d KanboAI_fixed ]; then
-            rm -rf KanboAI
-            mv KanboAI_fixed KanboAI
-          fi
+        run: unzip -q -o KanboAI.zip
 
       - name: Fix file timestamps
         run: find . -exec touch {} +
 
       - name: Add llama.cpp
         run: git clone --depth 1 https://github.com/ggml-org/llama.cpp KanboAI/app/src/main/cpp/llama.cpp
-
-      - name: Patch use_mmap for new llama.cpp API
-        run: |
-          sed -i 's/mp\.use_mmap = mmap;/mp.load_mode = mmap ? LLAMA_LOAD_MODE_MMAP : LLAMA_LOAD_MODE_NONE;/' KanboAI/app/src/main/cpp/kanbo_jni.cpp
-          grep -n "load_mode" KanboAI/app/src/main/cpp/kanbo_jni.cpp
 
       - name: Install Android SDK components
         run: |
